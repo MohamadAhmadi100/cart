@@ -1,0 +1,6 @@
+pika~=1.2.0
+loguru~=0.5.3
+pymongo~=4.0.1
+python-dotenv~=0.19.2
+setuptools~=57.0.0
+fastapi~=0.70.0
