@@ -1,6 +1,6 @@
 import pytest
-from RPC.cart.db_conection.db import MongoDb
-from RPC.cart.cart import Cart
+from models.cart.db_conection.db import MongoDb
+from models.cart.cart import Cart
 
 
 @pytest.fixture
@@ -12,7 +12,7 @@ def cart_add_fixture():
 
 @pytest.fixture
 def cart_get_fixture():
-    Cart.add_to_cart("0000", 1, 1, new=True)
+    Cart.add_to_cart("0000", 1, 1, "1")
     yield
     with MongoDb() as client:
         client.cart_collection.delete_one({'user_id': 1})
@@ -20,8 +20,8 @@ def cart_get_fixture():
 
 @pytest.fixture
 def remove_from_cart_fixture():
-    Cart.add_to_cart("0000", 1, 1, new=True)
-    Cart.add_to_cart("00000", 1, 1, new=True)
+    Cart.add_to_cart("0000", 1, 1, "1")
+    Cart.add_to_cart("00000", 1, 1, "1")
     yield
     with MongoDb() as client:
         client.cart_collection.delete_one({'user_id': 1})
