@@ -4,16 +4,15 @@ connection to mongo db
 import os
 
 from pymongo import MongoClient
-from dotenv import load_dotenv
+from config import settings
 
 
 class MongoDb:
     def __init__(self):
-        load_dotenv()
         self.connection = MongoClient(
-            os.getenv("MONGO_HOST"), username=os.getenv("MONGO_USER"), password=os.getenv("MONGO_PASS")
+            settings.MONGO_HOST, username=settings.MONGO_USER, password=settings.MONGO_PASS
         )
-        self.database = self.connection[os.getenv("MONGO_DB")]
+        self.database = self.connection[settings.MONGO_DB]
         self.cart_collection = self.database["cart"]
 
     def __enter__(self):
