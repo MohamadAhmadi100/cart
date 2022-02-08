@@ -1,34 +1,10 @@
-"""
-FastAPI
-"""
-import uvicorn
-from fastapi import FastAPI, responses
-from starlette.exceptions import HTTPException as starletteHTTPException
+from app.listener import callback
+from config import settings
+from rabbit_client import RabbitRPCClient
 
-from app.controllers.cart_controller import router
-
-TAGS = [
-    {
-        "name": "Cart",
-        "description": "Cart CRUD"
-    }
-]
-
-app = FastAPI(
-    title="Cart API",
-    description="This is Cart MicroService",
-    version="0.1.0",
-    openapi_tags=TAGS,
-    docs_url="/api/v1/docs/"
-)
-
-app.include_router(router)
-
-
-@app.exception_handler(starletteHTTPException)
-def validation_exception_handler(request, exc):
-    return responses.JSONResponse(exc.detail, status_code=exc.status_code)
-
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+if __name__ == '__main__':
+    rpc = RabbitRPCClient(receiving_queue=f"{settings.APP_NAME}_googooli", callback=callback,
+                          exchange_name="headers_exchange",
+                          headers={settings.APP_NAME: True}, headers_match_all=True)
+    rpc.connect()
+    rpc.consume()
