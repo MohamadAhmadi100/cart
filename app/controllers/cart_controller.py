@@ -22,7 +22,7 @@ def remove_product_from_cart(system_code: str, user_id: int, storage_id: str) ->
     response = Cart.remove_from_cart(system_code, user_id, storage_id)
     if response:
         return {"success": True, "status_code": 200, "message": response}
-    raise {'success': False, 'status_code': 404, 'message': 'product not found'}
+    return {'success': False, 'status_code': 404, 'message': 'product not found'}
 
 
 def get_cart(user_id: int) -> dict:
@@ -32,4 +32,4 @@ def get_cart(user_id: int) -> dict:
     stored_data = Cart.get_cart(user_id)
     if stored_data:
         return {"success": True, "status_code": 200, "message": stored_data}
-    raise {'success': False, 'status_code': 404, 'message': 'cart not found'}
+    return {'success': False, 'status_code': 404, 'message': 'cart not found'}
