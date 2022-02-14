@@ -73,54 +73,62 @@ We have specified a schema for adding item to cart; Here is an example:
 
 ```json
 {
-  "user_info": {
-    "user_id": 0,
-    .
-    .
-    .
-  },
-  "products": {
-    "system_code": "111",
-    .
-    .
-    .
-  },
-  "count": 1,
-  "storage_id": '1',
-  "price": 0
+  "parent_system_code": "10010100201",
+  "system_code": "100101002001",
+  "storage_id": "1",
+  "count": 1
 }
 ```
 
 Let me explain each one individually:
 
-* `user_info` is a dictionary of a user informations.
-    * `user_id` is a required key of **user_info** that is unique.
-* `product` is a dictionary of a product informations.
-    * `system_code` is a required key of **product** that is unique.
+* `parent_system_code`: This is the parent system code of the item.
+* `system_code` is a required key of **product** that is unique.
 * `count` is the number you want your given product in the cart.
 * `storage_id` is the id of a storage that user want to buy the product from
-* `price` is the current price of the given product.
 
 And another schema for cart in the database; Here is an example:
 
 ```json
 {
   "user_info": {
-    "user_id": 0,
-    .
-    .
-    .
+    "user_id": 84
   },
   "products": [
     {
-      "system_code": "111",
       "status": "in_cart",
-      "storage_id": "1",
-      "count": 1,
-      "price": 100000000,
-      .
-      .
-      .
+      "count": 2,
+      "storage_id": "3",
+      "price": 50000000,
+      "system_code": "100104001018",
+      "visible_in_site": true,
+      "config": {
+        "storage": {
+          "value": "64 GB",
+          "attribute_label": "حافظه داخلی",
+          "label": "۶۴ گیگابایت"
+        },
+        "color": {
+          "value": "blue",
+          "attribute_label": "رنگ",
+          "label": "آبی"
+        },
+        "guarantee": {
+          "value": "awat",
+          "attribute_label": "گارانتی",
+          "label": "آوات"
+        },
+        "ram": {
+          "value": "4 GB",
+          "attribute_label": "رم",
+          "label": "۴ گیگابایت"
+        },
+        "seller": {
+          "value": "Awat",
+          "attribute_label": "فروشنده",
+          "label": "آوات"
+        }
+      }
     }
   ]
 }
@@ -145,8 +153,8 @@ This section should list any major frameworks/libraries used to bootstrap your p
 the acknowledgements section. Here are a few examples.
 
 * [Python](https://www.python.org)
-* [Fast API](https://fastapi.tiangolo.com)
 * [Mongo DB](https://www.mongodb.com)
+* [RabbitMQ](https://www.rabbitmq.com)
 * Later, [Vue.js](https://vuejs.org) may included.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -187,20 +195,17 @@ After installing prerequisites, now you can install dependencies of this project
    ```sh
    pip install -e .
    ```
-5. Create config.py file in main directory
-    ```python
-    from pydantic import BaseSettings
-    
-    
-    class Settings(BaseSettings):
-        MONGO_USER = ''
-        MONGO_PASS = ''
-        MONGO_HOST = 'localhost'
-        MONGO_DB = 'db-cart'
-    
-    
-    settings = Settings()
-
+5. Create .env file in main directory
+    ```buildoutcfg
+   
+    APP_NAME='cart'
+   
+    MONGO_USER=''
+    MONGO_PASS=''
+    MONGO_HOST='localhost'
+    MONGO_DB='db_cart'
+   
+    RABBIT_HOST='localhost'
     ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -214,12 +219,10 @@ After installing prerequisites, now you can install dependencies of this project
 To run the project, make sure that the mongodb service is up locally and run this in the app directory
 
 ```sh
-uvicorn main:app --reload
+python main.py
 ```
 
 - You can visit [localhost:8000](http://localhost:8000) for root directory.
-- The API docs are available at [localhost:8000/api/v1/docs](http://localhost:8000/docs/)
-- Alternative API docs are also available at [localhost:8000/redoc](http://localhost:8000/redoc)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

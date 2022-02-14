@@ -14,7 +14,7 @@ class Cart:
         self.user_info = user_info
         self.product = product
 
-    def add_to_cart(self) -> Union[dict, tuple]:
+    def add_to_cart(self) -> Union[str, tuple]:
         """
         Adding product into user cart
         """
@@ -40,8 +40,8 @@ class Cart:
                                                            {'$addToSet': {'products': product}},
                                                            upsert=True)
             if not result.raw_result.get("updatedExisting") or result.modified_count:
-                return {"message": "item added to cart successfully"}
-            return {"error": "nothing changed"}, "error"
+                return "item added to cart successfully"
+            return "nothing changed", "error"
 
     @staticmethod
     def get_cart(cart_id: int):
@@ -55,7 +55,7 @@ class Cart:
             return None
 
     @staticmethod
-    def remove_from_cart(system_code: str, user_id: int, storage_id: str) -> Union[dict, None]:
+    def remove_from_cart(system_code: str, user_id: int, storage_id: str) -> Union[str, None]:
         """
         removing product from cart
         """
@@ -64,5 +64,5 @@ class Cart:
                                                        {"$pull": {"products": {"system_code": system_code,
                                                                                "storage_id": storage_id}}})
             if result.modified_count:
-                return {'message': 'product deleted successfully'}
+                return 'product deleted successfully'
             return None
