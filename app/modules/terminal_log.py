@@ -1,8 +1,4 @@
 import sys
-from config import settings
-
-app_name = settings.APP_NAME
-
 
 def connection_log(host, port, headers):
     sys.stdout.write("\033[0;32m")
