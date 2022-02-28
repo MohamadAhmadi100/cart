@@ -15,8 +15,8 @@ class Settings:
 
     RABBIT_HOST = os.getenv("RABBIT_HOST")
     RABBIT_PORT = int(os.getenv("RABBIT_PORT"))
-    RABBIT_USER = os.getenv("RABBIT_PORT")
-    RABBIT_PASS = os.getenv("RABBIT_PORT")
+    RABBIT_USER = os.getenv("RABBIT_USER")
+    RABBIT_PASS = os.getenv("RABBIT_PASS")
 
 
 
