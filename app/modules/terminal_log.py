@@ -1,6 +1,5 @@
 import sys
 
-
 def connection_log(host, port, headers):
     sys.stdout.write("\033[0;32m")
     print(" [x] Consumer running on host \"" + host + ":" + str(port) + "\" , "
