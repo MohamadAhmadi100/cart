@@ -10,7 +10,7 @@ from config import settings
 class MongoDb:
     def __init__(self):
         self.connection = MongoClient(
-            settings.MONGO_HOST, username=settings.MONGO_USER, password=settings.MONGO_PASS
+            settings.MONGO_HOST, settings.MONGO_PORT, username=settings.MONGO_USER, password=settings.MONGO_PASS
         )
         self.database = self.connection[settings.MONGO_DB]
         self.cart_collection = self.database["cart"]
