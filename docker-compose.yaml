@@ -12,7 +12,7 @@ services:
         networks:
             - mongodb_network-cart
         ports:
-            - 270121:${MONGO_PORT}
+            - 27021:${MONGO_PORT}
         restart: unless-stopped
     api:
         build: .
