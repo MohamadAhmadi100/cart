@@ -2,7 +2,6 @@ import json
 import sys
 
 import pika
-
 from app.modules import terminal_log
 from config import settings
 
@@ -20,9 +19,9 @@ class RabbitRPCClient:
         self.port = settings.RABBIT_PORT
         self.user = settings.RABBIT_USER
         self.password = settings.RABBIT_PASS
-        self.connection = self.connect()
-        self.channel = self.connection.channel()
-        self.channel.exchange_declare(exchange=exchange_name, exchange_type="headers")
+        self.exchange_name = exchange_name
+        self.credentials = pika.PlainCredentials(self.user, self.password)
+        self.connect()
         self.receiving_queue = receiving_queue
         self.channel.queue_declare(queue=self.receiving_queue, durable=True)
         self.channel.basic_qos(prefetch_count=1)
@@ -39,26 +38,28 @@ class RabbitRPCClient:
             routing_key="",
             arguments=self.headers
         )
+        self.consume()
 
     def connect(self):
-        credentials = pika.PlainCredentials(self.user, self.password)
-        connection = pika.BlockingConnection(
+        self.connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                 host=self.host,
                 port=self.port,
-                credentials=credentials,
-                blocked_connection_timeout=86400  # 86400 seconds = 24 hours
+                credentials=self.credentials,
+                # blocked_connection_timeout=86400  # 86400 seconds = 24 hours
             )
         )
-        return connection
-
+        self.channel = self.connection.channel()
+        self.channel.exchange_declare(exchange=self.exchange_name, exchange_type='headers')
+        self.channel.basic_qos(prefetch_count=1)
+        
     def publish(self, channel, method, properties, body):
         message = self.callback(json.loads(body))
         terminal_log.responce_log(message)
         channel.basic_publish(exchange='',
-                              routing_key=properties.reply_to,
-                              properties=pika.BasicProperties(correlation_id=properties.correlation_id),
-                              body=json.dumps(message))
+                            routing_key=properties.reply_to,
+                            properties=pika.BasicProperties(correlation_id=properties.correlation_id),
+                            body=json.dumps(message))
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
     def fanout_callback_runnable(self, channel, method, properties, body):
@@ -86,4 +87,3 @@ class RabbitRPCClient:
             self.channel.start_consuming()
         except KeyboardInterrupt:
             self.channel.stop_consuming()
-            self.connection.close()
