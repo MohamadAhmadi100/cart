@@ -12,7 +12,7 @@ class MongoDb:
         self.connection = MongoClient(
             settings.MONGO_HOST, settings.MONGO_PORT, username=settings.MONGO_USER, password=settings.MONGO_PASS
         )
-        self.database = self.connection[settings.MONGO_DB]
+        self.database = self.connection["db-cart"]
         self.cart_collection = self.database["cart"]
 
     def __enter__(self):
