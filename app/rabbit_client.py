@@ -1,7 +1,7 @@
 import json
-import sys
 
 import pika
+
 from app.modules import terminal_log
 from config import settings
 
@@ -52,14 +52,14 @@ class RabbitRPCClient:
         self.channel = self.connection.channel()
         self.channel.exchange_declare(exchange=self.exchange_name, exchange_type='headers')
         self.channel.basic_qos(prefetch_count=1)
-        
+
     def publish(self, channel, method, properties, body):
         message = self.callback(json.loads(body))
         terminal_log.responce_log(message)
         channel.basic_publish(exchange='',
-                            routing_key=properties.reply_to,
-                            properties=pika.BasicProperties(correlation_id=properties.correlation_id),
-                            body=json.dumps(message))
+                              routing_key=properties.reply_to,
+                              properties=pika.BasicProperties(correlation_id=properties.correlation_id),
+                              body=json.dumps(message))
         channel.basic_ack(delivery_tag=method.delivery_tag)
 
     def fanout_callback_runnable(self, channel, method, properties, body):

@@ -13,13 +13,21 @@ class Cart:
         self.price = price
         self.user_info = user_info
         self.product = product
+        self.insurance = list()
+        self.shipment = list()
 
     def add_to_cart(self) -> Union[str, tuple]:
         """
         Adding product into user cart
         """
-        product = {"status": "in_cart", "count": self.count, "storage_id": self.storage_id,
-                   "price": self.price}
+        product = {
+            "status": "in_cart",
+            "count": self.count,
+            "storage_id": self.storage_id,
+            "price": self.price,
+            "insurance": self.insurance,
+            "shipment": self.shipment,
+        }
         product.update(self.product)
         with MongoDb() as client:
             db_data = client.cart_collection.find_one(
