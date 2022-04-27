@@ -1,11 +1,11 @@
 from app.models.cart import Cart
 
 
-def add_and_edit_product_in_cart(count: int, storage_id: str, price: int, user_info: dict, product: dict) -> dict:
+def add_and_edit_product_in_cart(count: int, storage_id: str, user_info: dict, product: dict) -> dict:
     """
     edit and add item in cart
     """
-    cart = Cart(count, storage_id, price, user_info, product)
+    cart = Cart(count, storage_id, user_info, product)
     response = cart.add_to_cart()
     if type(response) is tuple:
         message, status = response

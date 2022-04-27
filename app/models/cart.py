@@ -7,14 +7,13 @@ from app.models.db_conection.db import MongoDb
 
 
 class Cart:
-    def __init__(self, count: int, storage_id: str, price: int, user_info: dict, product: dict):
+    def __init__(self, count: int, storage_id: str, user_info: dict, product: dict):
         self.count = count
         self.storage_id = storage_id
-        self.price = price
         self.user_info = user_info
         self.product = product
-        self.insurance = list()
-        self.shipment = list()
+        self.insurance = dict()
+        self.shipment = dict()
 
     def add_to_cart(self) -> Union[str, tuple]:
         """
@@ -23,10 +22,7 @@ class Cart:
         product = {
             "status": "in_cart",
             "count": self.count,
-            "storage_id": self.storage_id,
-            "price": self.price,
-            "insurance": self.insurance,
-            "shipment": self.shipment,
+            "storage_id": self.storage_id
         }
         product.update(self.product)
         with MongoDb() as client:
@@ -36,7 +32,6 @@ class Cart:
                  "products.storage_id": self.storage_id})
 
             if db_data:
-
                 in_cart_count = \
                     [a for a in db_data.get('products') if a.get("system_code") == self.product.get("system_code")][
                         0].get("count")
@@ -50,8 +45,13 @@ class Cart:
                     {"$inc": {"products.$.count": product['count']}})
             else:
                 result = client.cart_collection.update_one({"user_info.user_id": self.user_info.get('user_id')},
-                                                           {'$addToSet': {'products': product}},
-                                                           upsert=True)
+                                                           {
+                                                               "$set": {
+                                                                   "shipment": self.shipment,
+                                                                   "insurance": self.insurance
+                                                               },
+                                                               '$addToSet': {'products': product}
+                                                            }, upsert=True)
             if not result.raw_result.get("updatedExisting") or result.modified_count:
                 return "item edited in cart successfully"
             return "nothing changed", "nothing"
