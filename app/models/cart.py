@@ -12,7 +12,6 @@ class Cart:
         self.storage_id = storage_id
         self.user_info = user_info
         self.product = product
-        self.insurance = dict()
         self.shipment = dict()
 
     def add_to_cart(self) -> Union[str, tuple]:
@@ -43,17 +42,21 @@ class Cart:
                      "products": {"$elemMatch": {"system_code": self.product.get('system_code'),
                                                  "storage_id": self.storage_id}}},
                     {"$inc": {"products.$.count": product['count']}})
+                if not result.raw_result.get("updatedExisting") or result.modified_count:
+                    if self.count > 0:
+                        return "محصول به سبد خرید اضافه شد"
+                    else:
+                        return "محصول در سبد خرید کاهش داده شد"
             else:
                 result = client.cart_collection.update_one({"user_info.user_id": self.user_info.get('user_id')},
                                                            {
                                                                "$set": {
                                                                    "shipment": self.shipment,
-                                                                   "insurance": self.insurance
                                                                },
                                                                '$addToSet': {'products': product}
                                                             }, upsert=True)
-            if not result.raw_result.get("updatedExisting") or result.modified_count:
-                return "item edited in cart successfully"
+                if not result.raw_result.get("updatedExisting") or result.modified_count:
+                    return "محصول به سبد خرید اضافه شد"
             return "nothing changed", "nothing"
 
     @staticmethod
@@ -65,7 +68,7 @@ class Cart:
             db_find = client.cart_collection.find_one({"user_info.user_id": cart_id}, {"_id": 0})
             if db_find:
                 return db_find
-            return None
+            return {"user_info.user_id": cart_id, "products": []}
 
     @staticmethod
     def remove_from_cart(system_code: str, user_id: int, storage_id: str) -> Union[str, None]:
@@ -77,5 +80,5 @@ class Cart:
                                                        {"$pull": {"products": {"system_code": system_code,
                                                                                "storage_id": storage_id}}})
             if result.modified_count:
-                return 'product deleted successfully'
+                return 'محصول از سبد خرید حذف شد'
             return None

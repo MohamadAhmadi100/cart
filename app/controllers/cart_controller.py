@@ -30,6 +30,4 @@ def get_cart(user_id: int) -> dict:
     get user cart
     """
     stored_data = Cart.get_cart(user_id)
-    if stored_data:
-        return {"success": True, "status_code": 200, "message": stored_data}
-    return {'success': False, 'status_code': 404, 'error': 'cart not found'}
+    return {"success": True, "status_code": 200, "message": stored_data}
