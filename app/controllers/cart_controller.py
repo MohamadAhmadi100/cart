@@ -31,3 +31,48 @@ def get_cart(user_id: int) -> dict:
     """
     stored_data = Cart.get_cart(user_id)
     return {"success": True, "status_code": 200, "message": stored_data}
+
+
+
+def add_shipment_to_cart(shipment):
+    """
+    add shipment info to user's cart
+    """
+    stored_data = Cart.add_shipment(user_id=shipment.get("user_id"), shipment_details=shipment.get("shipment_details"))
+    if stored_data is not None:
+        return {"success": True, "message": "عملیات موفق بود"}
+    return {"success": False, "message": "عملیات ناموفق بود"}
+
+
+
+def add_wallet_to_cart(user_id: int, wallet_details: dict):
+    """
+    add wallet info to user's cart
+    """
+    stored_data = Cart.add_wallet(user_id, wallet_details)
+    if stored_data is not None:
+        return {"success": True, "message": "عملیات موفق بود"}
+    return {"success": False, "message": "عملیات ناموفق بود"}
+
+
+
+def add_payment_to_cart(user_id: int, payment_details: dict):
+    """
+    add payment info to user's cart
+    """
+    stored_data = Cart.add_payment(user_id, payment_details)
+    if stored_data is not None:
+        return {"success": True, "message": "عملیات موفق بود"}
+    return {"success": False, "message": "عملیات ناموفق بود"}
+
+
+def remove_cart(user_id: int):
+    """
+    remove shipment, insurance, wallet, payment and coupon
+    """
+    removed_data = Cart.remove(user_id)
+    if removed_data is not None:
+        return {"success": True, "message": "عملیات موفق بود"}
+    return {"success": False, "message": "عملیات ناموفق بود"}
+
+

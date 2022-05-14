@@ -82,3 +82,61 @@ class Cart:
             if result.modified_count:
                 return 'محصول از سبد خرید حذف شد'
             return None
+
+    @staticmethod
+    def add_shipment(user_id: int, shipment_details: dict):
+        """
+        add shipment details to customer's cart and change cart's amount
+        """
+        try:
+            with MongoDb() as client:
+                storage = list(shipment_details.keys())[0]
+                client.cart_collection.update_one({"user_info.user_id": user_id},
+                                                  {"$set": {f"shipment.{storage}": shipment_details[storage]}})
+                return "اطلاعات با موفقیت اضافه شد"
+        except:
+            return None
+
+
+    @staticmethod
+    def add_wallet(user_id: int, wallet_details: dict):
+        """
+        When customers use their wallet, details save on their cart
+        """
+        try:
+            with MongoDb() as client:
+                client.cart_collection.update_one({"user_info.user_id": user_id},
+                                                  {"$set": {"paymentInfo.wallet": wallet_details}})
+                return "اطلاعات با موفقیت اضافه شد"
+        except:
+            return None
+
+    @staticmethod
+    def add_payment(user_id: int, payment_details: dict):
+        """
+        When customers use their payment, details save on their cart
+        """
+        try:
+            with MongoDb() as client:
+                client.cart_collection.update_one({"user_info.user_id": user_id},
+                                                  {"$set": {"paymentInfo.payment": payment_details}})
+                return "اطلاعات با موفقیت اضافه شد"
+        except:
+            return None
+
+
+
+    @staticmethod
+    def remove(user_id: int):
+        """
+        re-initial cart and remove objects of wallet, shipment, insurance,...
+        """
+        try:
+            with MongoDb() as client:
+                cart = client.cart_collection.find_one({"user_info.user_id": user_id})
+                cart.update(dict.fromkeys(['shipment', 'payment', 'coupon', 'wallet'], {}))
+                client.cart_collection.update_one({"user_info.user_id": user_id},
+                                                  {"$set": cart})
+                return "موفق"
+        except:
+            return None
