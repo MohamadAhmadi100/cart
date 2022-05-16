@@ -118,7 +118,7 @@ class Cart:
         try:
             with MongoDb() as client:
                 client.cart_collection.update_one({"user_info.user_id": user_id},
-                                                  {"$set": {"paymentInfo.payment": payment_method}})
+                                                  {"$set": {"payment.payment": payment_method}})
                 return "اطلاعات با موفقیت اضافه شد"
         except:
             return None
