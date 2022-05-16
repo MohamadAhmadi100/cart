@@ -111,18 +111,14 @@ class Cart:
             return None
 
     @staticmethod
-    def add_payment(user_id: int, payment_method: str, payment_total_price: int):
+    def add_payment(user_id: int, payment_method: str):
         """
         When customers use their payment, details save on their cart
         """
         try:
             with MongoDb() as client:
-                payment_details = {
-                    "paymentMethod": payment_method,
-                    "totalPrice": payment_total_price
-                }
                 client.cart_collection.update_one({"user_info.user_id": user_id},
-                                                  {"$set": {"paymentInfo.payment": payment_details}})
+                                                  {"$set": {"paymentInfo.payment": payment_method}})
                 return "اطلاعات با موفقیت اضافه شد"
         except:
             return None

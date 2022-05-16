@@ -57,7 +57,7 @@ def add_payment_to_cart(user_id: int, payment_method: str, payment_total_price: 
     """
     add payment info to user's cart
     """
-    stored_data = Cart.add_payment(user_id, payment_method, payment_total_price)
+    stored_data = Cart.add_payment(user_id, payment_method)
     if stored_data is not None:
         return {"success": True, "message": "عملیات موفق بود"}
     return {"success": False, "message": "عملیات ناموفق بود"}
