@@ -54,7 +54,7 @@ class Cart:
                                                                    "shipment": self.shipment,
                                                                },
                                                                '$addToSet': {'products': product}
-                                                            }, upsert=True)
+                                                           }, upsert=True)
                 if not result.raw_result.get("updatedExisting") or result.modified_count:
                     return "محصول به سبد خرید اضافه شد"
             return "nothing changed", "nothing"
@@ -97,7 +97,6 @@ class Cart:
         except:
             return None
 
-
     @staticmethod
     def add_wallet(user_id: int, wallet_details: dict):
         """
@@ -112,19 +111,21 @@ class Cart:
             return None
 
     @staticmethod
-    def add_payment(user_id: int, payment_details: dict):
+    def add_payment(user_id: int, payment_method: str, payment_total_price: int):
         """
         When customers use their payment, details save on their cart
         """
         try:
             with MongoDb() as client:
+                payment_details = {
+                    "paymentMethod": payment_method,
+                    "totalPrice": payment_total_price
+                }
                 client.cart_collection.update_one({"user_info.user_id": user_id},
                                                   {"$set": {"paymentInfo.payment": payment_details}})
                 return "اطلاعات با موفقیت اضافه شد"
         except:
             return None
-
-
 
     @staticmethod
     def remove(user_id: int):
