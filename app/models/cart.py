@@ -98,14 +98,14 @@ class Cart:
             return None
 
     @staticmethod
-    def add_wallet(user_id: int, wallet_details: dict):
+    def add_wallet(user_id: int, wallet_amount: int):
         """
         When customers use their wallet, details save on their cart
         """
         try:
             with MongoDb() as client:
                 client.cart_collection.update_one({"user_info.user_id": user_id},
-                                                  {"$set": {"paymentInfo.wallet": wallet_details}})
+                                                  {"$set": {"payment.walletAmount": wallet_amount}})
                 return "اطلاعات با موفقیت اضافه شد"
         except:
             return None
@@ -118,7 +118,7 @@ class Cart:
         try:
             with MongoDb() as client:
                 client.cart_collection.update_one({"user_info.user_id": user_id},
-                                                  {"$set": {"payment.payment": payment_method}})
+                                                  {"$set": {"payment.paymentMethod": payment_method}})
                 return "اطلاعات با موفقیت اضافه شد"
         except:
             return None

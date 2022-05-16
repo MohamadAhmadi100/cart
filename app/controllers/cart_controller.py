@@ -43,11 +43,11 @@ def add_shipment_to_cart(shipment):
     return {"success": False, "message": "عملیات ناموفق بود"}
 
 
-def add_wallet_to_cart(user_id: int, wallet_details: dict):
+def add_wallet_to_cart(user_id: int, wallet_amount: int):
     """
     add wallet info to user's cart
     """
-    stored_data = Cart.add_wallet(user_id, wallet_details)
+    stored_data = Cart.add_wallet(user_id, wallet_amount)
     if stored_data is not None:
         return {"success": True, "message": "عملیات موفق بود"}
     return {"success": False, "message": "عملیات ناموفق بود"}
