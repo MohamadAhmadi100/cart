@@ -53,7 +53,7 @@ def add_wallet_to_cart(user_id: int, wallet_details: dict):
     return {"success": False, "message": "عملیات ناموفق بود"}
 
 
-def add_payment_to_cart(user_id: int, payment_method: str, payment_total_price: int):
+def add_payment_to_cart(user_id: int, payment_method: str):
     """
     add payment info to user's cart
     """
