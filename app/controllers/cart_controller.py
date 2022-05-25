@@ -10,9 +10,10 @@ def add_and_edit_product_in_cart(count: int, storage_id: str, user_info: dict, p
     if type(response) is tuple:
         message, status = response
         if status == 'delete':
-            return {"success": True, "status_code": 200, "message": message}
+            return {"success": True, "status_code": 200, "message": message,
+                    "cart": Cart.get_cart(user_info.get("user_id"))}
         return {"success": False, "status_code": 417, "message": message}
-    return {"success": True, "status_code": 201, "message": response}
+    return {"success": True, "status_code": 201, "message": response, "cart": Cart.get_cart(user_info.get("user_id"))}
 
 
 def remove_product_from_cart(system_code: str, user_id: int, storage_id: str) -> dict:
@@ -21,7 +22,8 @@ def remove_product_from_cart(system_code: str, user_id: int, storage_id: str) ->
     """
     response = Cart.remove_from_cart(system_code, user_id, storage_id)
     if response:
-        return {"success": True, "status_code": 200, "message": response}
+        return {"success": True, "status_code": 200, "message": response,
+                "cart": Cart.get_cart(user_id)}
     return {'success': False, 'status_code': 404, 'error': 'product not found'}
 
 
