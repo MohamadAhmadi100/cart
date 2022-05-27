@@ -137,3 +137,16 @@ class Cart:
                 return "موفق"
         except:
             return None
+
+    @staticmethod
+    def add_selected_payment_method(user_id: int):
+        """
+        When customers select unofficial order, details save on their cart
+        """
+        try:
+            with MongoDb() as client:
+                client.cart_collection.update_one({"user_info.user_id": user_id},
+                                                  {"$set": {"unofficial": True}})
+                return "اطلاعات با موفقیت اضافه شد"
+        except:
+            return None

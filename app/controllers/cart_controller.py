@@ -73,3 +73,13 @@ def remove_cart(user_id: int):
     if removed_data is not None:
         return {"success": True, "message": "عملیات موفق بود"}
     return {"success": False, "message": "عملیات ناموفق بود"}
+
+
+def add_official_unofficial(user_id: int):
+    """
+    add payment info to user's cart
+    """
+    stored_data = Cart.add_selected_payment_method(user_id)
+    if stored_data is not None:
+        return {"success": True, "message": "عملیات موفق بود"}
+    return {"success": False, "message": "عملیات ناموفق بود"}
