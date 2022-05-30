@@ -130,10 +130,13 @@ class Cart:
         """
         try:
             with MongoDb() as client:
-                cart = client.cart_collection.find_one({"user_info.user_id": user_id})
-                cart.update(dict.fromkeys(['shipment', 'payment', 'coupon', 'wallet'], {}))
-                client.cart_collection.update_one({"user_info.user_id": user_id},
-                                                  {"$set": cart})
+                cart = client.cart_collection.find({"user_info.user_id": user_id})
+                for root_cart in cart:
+                    if root_cart.get("unofficial") is not None:
+                        del root_cart['unofficial']
+                    root_cart['shipment'], root_cart['payment'], root_cart['coupon'] = {}, {}, {}
+                    client.cart_collection.replace_one({"user_info.user_id": user_id},
+                                                       root_cart)
                 return "موفق"
         except:
             return None
