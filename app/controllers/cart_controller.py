@@ -69,7 +69,7 @@ def remove_cart(user_id: int):
     """
     remove shipment, insurance, wallet, payment and coupon
     """
-    removed_data = Cart.remove(user_id)
+    removed_data = Cart.remove_all_data(user_id)
     if removed_data is not None:
         return {"success": True, "message": "عملیات موفق بود"}
     return {"success": False, "message": "عملیات ناموفق بود"}
@@ -81,5 +81,14 @@ def add_official_unofficial(user_id: int):
     """
     stored_data = Cart.add_selected_payment_method(user_id)
     if stored_data is not None:
+        return {"success": True, "message": "عملیات موفق بود"}
+    return {"success": False, "message": "عملیات ناموفق بود"}
+
+def remove_wallet(user_id: int):
+    """
+    remove shipment, insurance, wallet, payment and coupon
+    """
+    removed_data = Cart.remove_all_data(user_id)
+    if removed_data is not None:
         return {"success": True, "message": "عملیات موفق بود"}
     return {"success": False, "message": "عملیات ناموفق بود"}

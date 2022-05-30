@@ -124,7 +124,7 @@ class Cart:
             return None
 
     @staticmethod
-    def remove(user_id: int):
+    def remove_all_data(user_id: int):
         """
         re-initial cart and remove objects of wallet, shipment, insurance,...
         """
@@ -151,5 +151,21 @@ class Cart:
                 client.cart_collection.update_one({"user_info.user_id": user_id},
                                                   {"$set": {"unofficial": True}})
                 return "اطلاعات با موفقیت اضافه شد"
+        except:
+            return None
+
+    def remove_wallet(user_id: int):
+        """
+        re-initial cart and remove objects of wallet, shipment, insurance,...
+        """
+        try:
+            with MongoDb() as client:
+                cart = client.cart_collection.find({"user_info.user_id": user_id})
+                for root_cart in cart:
+                    if root_cart['payment'].get("walletAmount") is not None:
+                        del root_cart['walletAmount']
+                    client.cart_collection.replace_one({"user_info.user_id": user_id},
+                                                       root_cart)
+                return "موفق"
         except:
             return None
