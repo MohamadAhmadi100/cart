@@ -163,7 +163,7 @@ class Cart:
                 cart = client.cart_collection.find({"user_info.user_id": user_id})
                 for root_cart in cart:
                     if root_cart['payment'].get("walletAmount") is not None:
-                        del root_cart['walletAmount']
+                        del root_cart['payment']['walletAmount']
                     client.cart_collection.replace_one({"user_info.user_id": user_id},
                                                        root_cart)
                 return "موفق"
