@@ -88,7 +88,7 @@ def remove_wallet(user_id: int):
     """
     remove shipment, insurance, wallet, payment and coupon
     """
-    removed_data = Cart.remove_all_data(user_id)
+    removed_data = Cart.remove_wallet(user_id)
     if removed_data is not None:
         return {"success": True, "message": "عملیات موفق بود"}
     return {"success": False, "message": "عملیات ناموفق بود"}
