@@ -169,3 +169,15 @@ class Cart:
                 return "موفق"
         except:
             return None
+
+    @staticmethod
+    def remove_cart(user_id: int):
+        """
+        re-initial cart and remove objects of wallet, shipment, insurance,...
+        """
+        try:
+            with MongoDb() as client:
+                client.cart_collection.delete_one({"user_info.user_id": user_id})
+                return "موفق"
+        except:
+            return None
