@@ -135,7 +135,6 @@ class Cart:
                     if root_cart.get("unofficial") is not None:
                         del root_cart['unofficial']
                     root_cart['shipment'], root_cart['payment'], root_cart['coupon'] = {}, {}, {}
-                    root_cart['finalFlag'] = False
                     client.cart_collection.replace_one({"user_info.user_id": user_id},
                                                        root_cart)
                 return "اطلاعات با موفقیت اضافه شد"
