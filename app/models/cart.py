@@ -135,9 +135,10 @@ class Cart:
                     if root_cart.get("unofficial") is not None:
                         del root_cart['unofficial']
                     root_cart['shipment'], root_cart['payment'], root_cart['coupon'] = {}, {}, {}
+                    root_cart['finalFlag'] = False
                     client.cart_collection.replace_one({"user_info.user_id": user_id},
                                                        root_cart)
-                return "موفق"
+                return "اطلاعات با موفقیت اضافه شد"
         except:
             return None
 
@@ -179,5 +180,17 @@ class Cart:
             with MongoDb() as client:
                 client.cart_collection.delete_one({"user_info.user_id": user_id})
                 return "موفق"
+        except:
+            return None
+    @staticmethod
+    def add_payment_flag(user_id: int):
+        """
+        add payment flag to cart
+        """
+        try:
+            with MongoDb() as client:
+                client.cart_collection.update_one({"user_info.user_id": user_id},
+                                                  {"$set": {"finalFlag": True}})
+                return "اطلاعات با موفقیت اضافه شد"
         except:
             return None

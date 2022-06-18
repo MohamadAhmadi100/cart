@@ -101,3 +101,12 @@ def delete_cart(user_id: int):
     if removed_data is not None:
         return {"success": True, "message": "عملیات موفق بود"}
     return {"success": False, "message": "عملیات ناموفق بود"}
+
+def final_flag(user_id: int):
+    """
+    add final flag true to cart
+    """
+    removed_data = Cart.remove_cart(user_id)
+    if removed_data is not None:
+        return {"success": True, "message": "عملیات موفق بود"}
+    return {"success": False, "message": "عملیات ناموفق بود"}
