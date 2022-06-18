@@ -3,7 +3,7 @@ stages:
   - push
   - deploy
 
-  cache:
+cache:
   paths:
     - .cache/pip
 
