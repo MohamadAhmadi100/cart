@@ -177,7 +177,7 @@ class Cart:
         """
         try:
             with MongoDb() as client:
-                client.cart_collection.delete_one({"user_info.user_id": user_id})
+                client.cart_collection.delete_one({"user_info.user_id": int(user_id)})
                 return "موفق"
         except:
             return None
