@@ -113,3 +113,12 @@ def final_flag(user_id: int):
     if removed_data is not None:
         return {"success": True, "message": "عملیات موفق بود"}
     return {"success": False, "message": "عملیات ناموفق بود"}
+
+def remove_cart_bank_callback(user_id: int):
+    """
+    remove shipment, insurance, wallet, payment and coupon
+    """
+    removed_data = Cart.remove_all_data_callback(user_id)
+    if removed_data is not None:
+        return {"success": True, "message": "عملیات موفق بود"}
+    return {"success": False, "message": "عملیات ناموفق بود"}

@@ -193,3 +193,23 @@ class Cart:
                 return "اطلاعات با موفقیت اضافه شد"
         except:
             return None
+
+    @staticmethod
+    def remove_all_data_callback(user_id: int):
+        """
+        re-initial cart and remove objects of wallet, shipment, insurance,...
+        """
+        try:
+            with MongoDb() as client:
+                cart = client.cart_collection.find({"user_info.user_id": user_id})
+                for root_cart in cart:
+                    del root_cart['finalFlag']
+                    if root_cart.get("unofficial") is not None:
+                        del root_cart['unofficial']
+
+                    root_cart['shipment'], root_cart['payment'], root_cart['coupon'] = {}, {}, {}
+                    client.cart_collection.replace_one({"user_info.user_id": user_id},
+                                                       root_cart)
+                return "اطلاعات با موفقیت اضافه شد"
+        except:
+            return None
