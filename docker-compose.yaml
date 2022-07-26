@@ -9,8 +9,6 @@ services:
 #            - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}
         volumes:
             - mongodb-data-cart:/data/db-cart
-        networks:
-            - mongodb_network_cart
         ports:
             - ${MONGO_PORT}:27017
         restart: unless-stopped
@@ -35,7 +33,3 @@ services:
 
 volumes:
     mongodb-data-cart:
-
-networks:
-    mongodb_network_cart:
-        driver: bridge
