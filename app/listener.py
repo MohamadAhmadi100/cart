@@ -15,10 +15,10 @@ def callback(message: dict) -> dict:
     action = data.get("action")
     if action:
         body = data.get("body", {})
-        # try:
-        exec(f"global response; response['{app_name}'] = {action}(**{body})")
-        return response
-        # except Exception as e:
-        #     return {f"{app_name}": {"success": False, "status_code": 503, "error": f"{app_name}: {e}"}}
+        try:
+            exec(f"global response; response['{app_name}'] = {action}(**{body})")
+            return response
+        except Exception as e:
+            return {f"{app_name}": {"success": False, "status_code": 503, "error": f"{app_name}: {e}"}}
     else:
         return {f"{app_name}": {"success": False, "status_code": 501, "error": f"{app_name}: action not found"}}
