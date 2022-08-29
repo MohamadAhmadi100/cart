@@ -29,7 +29,7 @@ services:
     api:
         build: .
         environment:
-        - TZ=Asia/Tehran
+            - TZ=Asia/Tehran
 
 volumes:
     mongodb-data-cart:
