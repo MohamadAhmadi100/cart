@@ -5,8 +5,8 @@ services:
         image: mongo:4.4.4
         container_name: mongo-db-crt
         environment:
-            - MONGO_INITDB_ROOT_USERNAME=admin
-            - MONGO_INITDB_ROOT_PASSWORD=admin
+          MONGO_INITDB_ROOT_USERNAME: admin
+          MONGO_INITDB_ROOT_PASSWORD: admin123456
         volumes:
             - mongodb-data-cart:/data/db-cart
         ports:
