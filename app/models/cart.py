@@ -84,6 +84,22 @@ class Cart:
             return None
 
     @staticmethod
+    def basket_add_to_cart(user_id, basket_id, basket_data):
+        with MongoDb() as mongo:
+            result = mongo.cart_collection.update_one(
+                {"user_info.user_id": user_id},
+                {"$set": {f"baskets.{basket_id}": basket_data},
+                 "$setOnInsert": {"products": [],
+                                  "shipment": {}
+                                  }
+                 },
+                upsert=True
+            )
+            if result.modified_count or result.upserted_id:
+                return True
+            return False
+
+    @staticmethod
     def add_shipment(user_id: int, shipment_details: dict):
         """
         add shipment details to customer's cart and change cart's amount
@@ -181,6 +197,7 @@ class Cart:
                 return "موفق"
         except:
             return None
+
     @staticmethod
     def add_payment_flag(user_id: int):
         """

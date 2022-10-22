@@ -35,6 +35,13 @@ def get_cart(user_id: int) -> dict:
     return {"success": True, "status_code": 200, "message": stored_data}
 
 
+def basket_add_to_cart(user_id, basket_id, basket_data):
+    result = Cart.basket_add_to_cart(user_id, basket_id, basket_data)
+    if result:
+        return {"success": True, "status_code": 200, "message": "added successfully"}
+    return {'success': False, 'status_code': 404, 'error': 'product not found'}
+
+
 def add_shipment_to_cart(shipment):
     """
     add shipment info to user's cart
@@ -113,6 +120,7 @@ def final_flag(user_id: int):
     if removed_data is not None:
         return {"success": True, "message": "عملیات موفق بود"}
     return {"success": False, "message": "عملیات ناموفق بود"}
+
 
 def remove_cart_bank_callback(user_id: int):
     """
