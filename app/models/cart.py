@@ -88,7 +88,7 @@ class Cart:
         with MongoDb() as mongo:
             result = mongo.cart_collection.update_one(
                 {"user_info.user_id": user_id},
-                {"$set": {f"baskets.{basket_id}": basket_data},
+                {"$addToSet": {"baskets": {f"{basket_id}": basket_data}},
                  "$setOnInsert": {"products": [],
                                   "shipment": {}
                                   }
