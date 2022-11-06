@@ -35,11 +35,14 @@ def get_cart(user_id: int) -> dict:
     return {"success": True, "status_code": 200, "message": stored_data}
 
 
-def basket_add_to_cart(user_id, basket_id, basket_data):
-    result = Cart.basket_add_to_cart(user_id, basket_id, basket_data)
+def basket_add_to_cart(user_id, basket_id, basket_data, action, list_index=0):
+    if action == "add":
+        result = Cart.basket_add_to_cart(user_id, basket_id, basket_data)
+    else:
+        result = Cart.edit_basket_cart(user_id, basket_id, basket_data, list_index)
     if result:
-        return {"success": True, "status_code": 200, "message": "added successfully"}
-    return {'success': False, 'status_code': 404, 'error': 'product not found'}
+        return {"success": True, "status_code": 200, "message": "عملیات موفق بود"}
+    return {'success': False, 'status_code': 404, 'error': 'عملیات ناموفق بود'}
 
 
 def add_shipment_to_cart(shipment):

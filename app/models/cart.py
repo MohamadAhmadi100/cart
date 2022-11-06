@@ -88,12 +88,23 @@ class Cart:
         with MongoDb() as mongo:
             result = mongo.cart_collection.update_one(
                 {"user_info.user_id": user_id},
-                {"$addToSet": {"baskets": {f"{basket_id}": basket_data}},
+                {"$push": {f"baskets.{basket_id}": [basket_data]},
                  "$setOnInsert": {"products": [],
                                   "shipment": {}
                                   }
                  },
                 upsert=True
+            )
+            if result.modified_count or result.upserted_id:
+                return True
+            return False
+
+    @staticmethod
+    def edit_basket_cart(user_id, basket_id, basket_data, list_index):
+        with MongoDb() as mongo:
+            result = mongo.cart_collection.update_one(
+                {"user_info.user_id": user_id},
+                {"$set": {f"baskets.{basket_id}.{list_index}": basket_data}},
             )
             if result.modified_count or result.upserted_id:
                 return True
