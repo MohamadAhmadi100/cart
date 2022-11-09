@@ -133,3 +133,10 @@ def remove_cart_bank_callback(user_id: int):
     if removed_data is not None:
         return {"success": True, "message": "عملیات موفق بود"}
     return {"success": False, "message": "عملیات ناموفق بود"}
+
+
+def replace_basket_to_cart(baskets: list, user_id: int):
+    """
+    replace baskets
+    """
+    return Cart.replace_baskets(user_id, baskets)

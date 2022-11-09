@@ -241,3 +241,12 @@ class Cart:
                 return "اطلاعات با موفقیت اضافه شد"
         except:
             return None
+
+    @staticmethod
+    def replace_baskets(user_id: int, baskets: list):
+        try:
+            with MongoDb() as client:
+                client.cart_collection.update_one({"user_info.user_id": user_id}, {"$set": {"baskets": baskets}})
+                return {"success": True}
+        except:
+            return {"success": False}
