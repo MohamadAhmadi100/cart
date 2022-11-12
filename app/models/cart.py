@@ -250,3 +250,23 @@ class Cart:
                 return {"success": True}
         except:
             return {"success": False}
+
+    @staticmethod
+    def calc_cart_items_count(user_id):
+        try:
+            with MongoDb() as client:
+                total_item = 0
+                cart = client.cart_collection.find_one({"user_info.user_id": user_id}, {"_id": False})
+                if cart['products']:
+                    for total_count in cart['products']:
+                        total_item += total_count['count']
+                if cart.get("baskets") is not None:
+                    for key, value in cart['baskets'].items():
+                        for baskets_items in value:
+                            for b_key, b_value in baskets_items.items():
+                                if b_value is not None:
+                                    for products_baskets in b_value:
+                                        total_item += products_baskets['count']
+                return {"success":True, "total_count": total_item}
+        except:
+            return {"success": False}

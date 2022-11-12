@@ -140,3 +140,7 @@ def replace_basket_to_cart(baskets: list, user_id: int):
     replace baskets
     """
     return Cart.replace_baskets(user_id, baskets)
+
+
+def calc_cart_count(user_id):
+    return Cart.calc_cart_items_count(user_id)
