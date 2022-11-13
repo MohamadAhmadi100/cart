@@ -16,6 +16,22 @@ def add_and_edit_product_in_cart(count: int, storage_id: str, user_info: dict, p
     return {"success": True, "status_code": 201, "message": response, "cart": Cart.get_cart(user_info.get("user_id"))}
 
 
+def add_and_edit_product_in_cart_offline(count: int, storage_id: str, user_info: dict, product: dict, price: int,
+                                         staff_name: str) -> dict:
+    """
+    edit and add item in cart
+    """
+    cart = Cart(count, storage_id, user_info, product)
+    response = cart.add_to_cart_offline(price, staff_name)
+    if type(response) is tuple:
+        message, status = response
+        if status == 'delete':
+            return {"success": True, "status_code": 200, "message": message,
+                    "cart": Cart.get_cart(user_info.get("user_id"))}
+        return {"success": False, "status_code": 417, "message": message}
+    return {"success": True, "status_code": 201, "message": response, "cart": Cart.get_cart(user_info.get("user_id"))}
+
+
 def remove_product_from_cart(system_code: str, user_id: int, storage_id: str) -> dict:
     """
     remove an item from cart
