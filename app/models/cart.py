@@ -107,6 +107,19 @@ class Cart:
             return "nothing changed", "nothing"
 
     @staticmethod
+    def basket_remove(user_id, basket_id):
+        with MongoDb() as mongo:
+            result = mongo.cart_collection.update_one(
+                {"user_info.user_id": user_id},
+                {
+                    "$unset": {f"baskets.{basket_id}": "basket_data"},
+                }
+            )
+            if result.modified_count or result.upserted_id:
+                return True
+            return False
+
+    @staticmethod
     def get_cart(cart_id: int):
         """
         getting cart
