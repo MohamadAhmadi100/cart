@@ -68,7 +68,6 @@ class Cart:
             "count": self.count,
             "storage_id": self.storage_id,
             "price": price,
-            "staff_name": staff_name
         }
         product.update(self.product)
         with MongoDb() as client:
@@ -88,7 +87,12 @@ class Cart:
                     {"user_info.user_id": self.user_info.get('user_id'),
                      "products": {"$elemMatch": {"system_code": self.product.get('system_code'),
                                                  "storage_id": self.storage_id}}},
-                    {"$inc": {"products.$.count": product['count']}})
+                    {"$inc": {"products.$.count": product['count']},
+                     "$set": {
+                         "offline": True,
+                         "staff_name": staff_name
+                     }
+                     })
                 if not result.raw_result.get("updatedExisting") or result.modified_count:
                     if self.count > 0:
                         return "محصول به سبد خرید اضافه شد"
@@ -99,6 +103,8 @@ class Cart:
                                                            {
                                                                "$set": {
                                                                    "shipment": self.shipment,
+                                                                   "offline": True,
+                                                                   "staff_name": staff_name
                                                                },
                                                                '$addToSet': {'products': product}
                                                            }, upsert=True)
