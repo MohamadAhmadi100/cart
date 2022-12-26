@@ -7,12 +7,13 @@ from app.models.db_conection.db import MongoDb
 
 
 class Cart:
-    def __init__(self, count: int, storage_id: str, user_info: dict, product: dict):
+    def __init__(self, count: int, storage_id: str, user_info: dict, product: dict, days=0):
         self.count = count
         self.storage_id = storage_id
         self.user_info = user_info
         self.product = product
         self.shipment = dict()
+        self.days = days
 
     def add_to_cart(self) -> Union[str, tuple]:
         """
@@ -54,6 +55,55 @@ class Cart:
                                                                    "shipment": self.shipment,
                                                                },
                                                                '$addToSet': {'products': product}
+                                                           }, upsert=True)
+                if not result.raw_result.get("updatedExisting") or result.modified_count:
+                    return "محصول به سبد خرید اضافه شد"
+            return "nothing changed", "nothing"
+
+    def add_to_credit_cart(self) -> Union[str, tuple]:
+        """
+        Adding product into user cart
+        """
+        credits = {
+            "status": "in_cart",
+            "count": self.count,
+            "storage_id": self.storage_id,
+            "days": self.days
+        }
+        credits.update(self.product)
+        with MongoDb() as client:
+            db_data = client.cart_collection.find_one(
+                {"user_info.user_id": self.user_info.get('user_id'),
+                 "credits.system_code": self.product.get('system_code'),
+                 "credits.storage_id": self.storage_id})
+
+            if db_data:
+                in_cart_count = \
+                    [a for a in db_data.get('credits') if a.get("system_code") == self.product.get("system_code")][
+                        0].get("count")
+                if in_cart_count + self.count <= 0:
+                    return self.remove_from_cart(self.product.get('system_code'), self.user_info.get('user_id'),
+                                                 self.storage_id), "delete"
+                result = client.cart_collection.update_one(
+                    {"user_info.user_id": self.user_info.get('user_id'),
+                     "credits": {"$elemMatch": {
+                         "system_code": self.product.get('system_code'),
+                         "storage_id": self.storage_id}
+                     }},
+                    {"$inc": {"credits.$.count": credits['count']}})
+                if not result.raw_result.get("updatedExisting") or result.modified_count:
+                    if self.count > 0:
+                        return "محصول به سبد خرید اضافه شد"
+                    else:
+                        return "محصول در سبد خرید کاهش داده شد"
+            else:
+                result = client.cart_collection.update_one({"user_info.user_id": self.user_info.get('user_id')},
+                                                           {
+                                                               "$set": {
+                                                                   "shipment": self.shipment,
+                                                               },
+                                                               '$addToSet': {'credits': credits},
+                                                               "$setOnInsert": {"products": []}
                                                            }, upsert=True)
                 if not result.raw_result.get("updatedExisting") or result.modified_count:
                     return "محصول به سبد خرید اضافه شد"
@@ -134,7 +184,7 @@ class Cart:
             db_find = client.cart_collection.find_one({"user_info.user_id": cart_id}, {"_id": 0})
             if db_find:
                 return db_find
-            return {"user_info.user_id": cart_id, "products": []}
+            return {"user_info.user_id": cart_id, "products": [], "credits": []}
 
     @staticmethod
     def remove_from_cart(system_code: str, user_id: int, storage_id: str) -> Union[str, None]:
