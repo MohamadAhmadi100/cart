@@ -83,6 +83,12 @@ def basket_remove(user_id, basket_id):
     return {'success': False, 'status_code': 404, 'error': 'product not found'}
 
 
+def basket_delete_from_cart(user_id, basket_id, list_index=0):
+    if result := Cart.basket_delete_from_cart(user_id, basket_id, list_index):
+        return {"success": True, "status_code": 200, "message": "عملیات موفق بود"}
+    return {'success': False, 'status_code': 404, 'error': 'عملیات ناموفق بود'}
+
+
 def add_shipment_to_cart(shipment):
     """
     add shipment info to user's cart

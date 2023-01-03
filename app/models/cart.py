@@ -216,6 +216,21 @@ class Cart:
             return False
 
     @staticmethod
+    def basket_delete_from_cart(user_id, basket_id, list_index):
+        with MongoDb() as mongo:
+            mongo.cart_collection.update_one(
+                {"user_info.user_id": user_id},
+                {"$unset": {f"baskets.{basket_id}.{list_index}": 1},
+                 }
+            )
+            result = mongo.cart_collection.update_one(
+                {"user_info.user_id": user_id},
+                {"$pull": {f"baskets.{basket_id}": None},
+                 }
+            )
+            return bool(result.modified_count or result.upserted_id)
+
+    @staticmethod
     def edit_basket_cart(user_id, basket_id, basket_data, list_index):
         with MongoDb() as mongo:
             result = mongo.cart_collection.update_one(
@@ -252,6 +267,8 @@ class Cart:
                 return "اطلاعات با موفقیت اضافه شد"
         except:
             return None
+
+
 
     @staticmethod
     def add_payment(user_id: int, payment_method: str):
