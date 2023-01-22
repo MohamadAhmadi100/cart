@@ -218,7 +218,7 @@ class Cart:
     @staticmethod
     def basket_delete_from_cart(user_id, basket_id, list_index):
         with MongoDb() as mongo:
-            mongo.cart_collection.update_one(
+            result = mongo.cart_collection.update_one(
                 {"user_info.user_id": user_id},
                 {"$unset": {f"baskets.{basket_id}.{list_index}": 1},
                  }
