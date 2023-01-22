@@ -402,11 +402,13 @@ class Cart:
                     for total_count in cart['products']:
                         total_item += total_count['count']
                 if cart.get("baskets") is not None:
-                    for items in cart['baskets']:
-                        for baskets in items['baskets']:
-                            for key, value in baskets.items():
-                                if type(value) == list:
-                                    [basket_count.append(curser['count']) for curser in value]
-                return {"success": True, "total_count": total_item + sum(basket_count)}
+                    for key, value in cart['baskets'].items():
+                        for baskets_items in value:
+                            for b_key, b_value in baskets_items.items():
+                                if type(b_value) is list:
+                                    for products_baskets in b_value:
+                                        total_item += products_baskets['count']
+                    return {"success": True, "total_count": total_item}
+
         except:
             return {"success": False}
