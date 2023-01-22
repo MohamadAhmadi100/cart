@@ -228,6 +228,17 @@ class Cart:
                 {"$pull": {f"baskets.{basket_id}": None},
                  }
             )
+            if not len(
+                    mongo.cart_collection.find_one({
+                        {"user_info.user_id": user_id},
+                        {f"baskets.{basket_id}": 1}
+                    })
+            ):
+                mongo.cart_collection.update_one(
+                    {"user_info.user_id": user_id},
+                    {"$unset": {f"baskets.{basket_id}": 1},
+                     }
+                )
             return bool(result.modified_count or result.upserted_id)
 
     @staticmethod
@@ -267,8 +278,6 @@ class Cart:
                 return "اطلاعات با موفقیت اضافه شد"
         except:
             return None
-
-
 
     @staticmethod
     def add_payment(user_id: int, payment_method: str):
