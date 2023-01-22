@@ -408,7 +408,7 @@ class Cart:
                                 if type(b_value) is list:
                                     for products_baskets in b_value:
                                         total_item += products_baskets['count']
-                    return {"success": True, "total_count": total_item}
+                return {"success": True, "total_count": total_item}
 
         except:
             return {"success": False}
