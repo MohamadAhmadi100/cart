@@ -218,23 +218,20 @@ class Cart:
     @staticmethod
     def basket_delete_from_cart(user_id, basket_id, list_index):
         with MongoDb() as mongo:
-            result = mongo.cart_collection.update_one(
+            mongo.cart_collection.update_one(
                 {"user_info.user_id": user_id},
                 {"$unset": {f"baskets.{basket_id}.{list_index}": 1},
                  }
             )
-            # result = mongo.cart_collection.update_one(
-            #     {"user_info.user_id": user_id},
-            #     {"$pull": {f"baskets.{basket_id}": None},
-            #      }
-            # )
-            if not len(
-                    mongo.cart_collection.find_one(
-                        {"user_info.user_id": user_id},
-                        {f"baskets.{basket_id}": 1}
-                    )
-            ):
-                print(3333)
+            result = mongo.cart_collection.update_one(
+                {"user_info.user_id": user_id},
+                {"$pull": {f"baskets.{basket_id}": None},
+                 }
+            )
+            basket = mongo.cart_collection.find_one(
+                {"user_info.user_id": user_id},
+                {f"baskets.{basket_id}": 1, "_id": 0})
+            if type(basket.get("baskets").get(str(basket_id)))==list and not len(basket.get("baskets").get(str(basket_id))):
                 mongo.cart_collection.update_one(
                     {"user_info.user_id": user_id},
                     {"$unset": {f"baskets.{basket_id}": 1},
