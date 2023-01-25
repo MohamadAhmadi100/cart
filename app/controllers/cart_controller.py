@@ -89,6 +89,18 @@ def basket_delete_from_cart(user_id, basket_id, list_index=0):
     return {'success': False, 'status_code': 404, 'error': 'عملیات ناموفق بود'}
 
 
+def add_coupon_to_cart(user_id, coupon):
+    if result := Cart.coupon_add_to_cart(user_id, coupon):
+        return {"success": True, "status_code": 200, "message": "عملیات موفق بود"}
+    return {'success': False, 'status_code': 404, 'error': 'عملیات ناموفق بود'}
+
+
+def delete_coupon_from_cart(user_id):
+    if result := Cart.coupon_delete_from_cart(user_id):
+        return {"success": True, "status_code": 200, "message": "عملیات موفق بود"}
+    return {'success': False, 'status_code': 404, 'error': 'عملیات ناموفق بود'}
+
+
 def add_shipment_to_cart(shipment):
     """
     add shipment info to user's cart

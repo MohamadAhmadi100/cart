@@ -231,7 +231,8 @@ class Cart:
             basket = mongo.cart_collection.find_one(
                 {"user_info.user_id": user_id},
                 {f"baskets.{basket_id}": 1, "_id": 0})
-            if type(basket.get("baskets").get(str(basket_id)))==list and not len(basket.get("baskets").get(str(basket_id))):
+            if type(basket.get("baskets").get(str(basket_id))) == list and not len(
+                    basket.get("baskets").get(str(basket_id))):
                 mongo.cart_collection.update_one(
                     {"user_info.user_id": user_id},
                     {"$unset": {f"baskets.{basket_id}": 1},
@@ -249,6 +250,18 @@ class Cart:
             if result.modified_count or result.upserted_id:
                 return True
             return False
+
+    @staticmethod
+    def coupon_add_to_cart(user_id, coupon):
+        with MongoDb() as mongo:
+            result = mongo.cart_collection.update_one({"user_info.user_id": user_id}, {"$set": {"coupon": coupon}})
+        return bool(result.modified_count or result.upserted_id)
+
+    @staticmethod
+    def coupon_delete_from_cart(user_id):
+        with MongoDb() as mongo:
+            result = mongo.cart_collection.update_one({"user_info.user_id": user_id}, {"$unset": {"coupon": 1}})
+        return bool(result.modified_count or result.upserted_id)
 
     @staticmethod
     def add_shipment(user_id: int, shipment_details: dict):
