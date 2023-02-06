@@ -198,5 +198,12 @@ def replace_basket_to_cart(baskets: list, user_id: int):
     return Cart.replace_baskets(user_id, baskets)
 
 
+def delete_basket(user_id: int):
+    """
+    delete basket object from cart
+    """
+    return Cart.delete_basket_detail(user_id)
+
+
 def calc_cart_count(user_id):
     return Cart.calc_cart_items_count(user_id)

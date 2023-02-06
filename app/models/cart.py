@@ -405,6 +405,17 @@ class Cart:
             return {"success": False}
 
     @staticmethod
+    def delete_basket_detail(user_id):
+        try:
+            with MongoDb() as client:
+                cart = client.cart_collection.find_one({"user_info.user_id": user_id})
+                del cart['baskets']
+                client.cart_collection.replace_one({"user_info.user_id": user_id}, cart)
+                return {"success": True}
+        except:
+            return {"success": False}
+
+    @staticmethod
     def calc_cart_items_count(user_id):
         try:
             with MongoDb() as client:
